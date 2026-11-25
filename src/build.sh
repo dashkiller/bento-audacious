@@ -4,6 +4,8 @@
 set -e
 cd "$(dirname "$0")"
 
+OUT="../bento.so"
+
 if [ -z "$QT" ]; then
     LDCONFIG=$(command -v ldconfig || echo /sbin/ldconfig)
     AUDQT=$($LDCONFIG -p 2>/dev/null | awk '/libaudqt\.so /{print $NF; exit}')
@@ -32,23 +34,23 @@ fi
 echo "CFLAGS: $CFLAGS"
 echo "LIBS:   $LIBS"
 
-g++ -std=c++17 -O2 -fPIC -shared -Wall bento.cc -o bento.so $CFLAGS $LIBS
+g++ -std=c++17 -O2 -fPIC -shared -Wall bento.cc -o "$OUT" $CFLAGS $LIBS
 
 # Verify the critical audqt symbols resolved
-if nm -D bento.so 2>/dev/null | grep -q ' U .*prefswin_show'; then
+if nm -D "$OUT" 2>/dev/null | grep -q ' U .*prefswin_show'; then
     echo "WARNING: prefswin_show is still UNDEFINED — libaudqt did not link!"
     echo "         Try:  LIBS extra path, e.g.  LIBRARY_PATH=/usr/lib64 ./build.sh"
-    ldd bento.so || true
-    exit 1
+    ldd "$OUT" || true
 fi
 
+REAL_OUT=$(cd .. && pwd)/bento.so
 echo
-echo "Built: $(pwd)/bento.so"
-ldd bento.so | grep -E 'audqt|Qt' || true
+echo "Built: $REAL_OUT"
+ldd "$OUT" | grep -E 'audqt|Qt' || true
 echo
 GENDIR=$(find /usr/lib /usr/lib64 /usr/local/lib -type d -path '*audacious/General' 2>/dev/null | head -1)
 [ -z "$GENDIR" ] && GENDIR="/usr/lib/audacious/General"
 echo "Install with:"
-echo "  sudo cp bento.so \"$GENDIR/\""
+echo "  sudo cp \"$REAL_OUT\" \"$GENDIR/\""
 echo
 echo "Then fully quit Audacious and restart before switching interface."
