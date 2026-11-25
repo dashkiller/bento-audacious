@@ -2,4 +2,5 @@
 
 
     Build using build.sh.
-    Unzip Bento.zip into "~/.local/share/audacious/"
+    Move bento.so to /usr/lib/audacious/General/
+    Unzip Bento.zip into ~/.local/share/audacious/
