@@ -7,4 +7,4 @@
     
 # Screenshots
 
-    ![alt text](https://github.com/DashKiller/bento-audacious/blob/main/screenshots/bento-audacious-screenshot-01.png "Audacious Screenshot")
+![Audacious Screenshot](/screenshots/bento-audacious-screenshot-01.png "Audacious Screenshot")
