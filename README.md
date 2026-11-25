@@ -7,4 +7,4 @@
     
 # Screenshots
 
-![Audacious Screenshot](/screenshots/bento-audacious-screenshot-01.png "Audacious Screenshot")
+![Audacious Screenshot](/screenshots/bento-audacious-screenshot-01.png "Audacious Screenshot 1")
