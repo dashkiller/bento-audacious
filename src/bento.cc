@@ -3,8 +3,8 @@
  *
  * Milestone 1: draws the top-left player panel of the Winamp 5 "Bento" skin
  * (time display, song ticker, volume, seek bar, transport buttons, shuffle,
- * repeat, mute, lightning bolt) using the skin's own PNG files, and wires it
- * to Audacious playback.
+ * repeat, mute, lightning bolt) using the skin's own PNG files (now embedded
+ * via bento_assets.h), and wires it to Audacious playback.
  *
  * Milestone 2: adds a playlist pane on the right matching the Bento / Winamp
  * look (numbered entries, orange text, durations, current-track highlight,
@@ -15,12 +15,8 @@
  * playlist — layout matches the classic Bento main window.
  *
  * All coordinates were taken from Bento's xml/player-normal-group.xml and
- * xml/player-elements.xml.  Nothing is hard-wired to your machine except the
- * skin folder, which defaults to:
- *
- *     ~/.local/share/audacious/Bento/        (must contain window/player.png)
- *
- * and can be overridden with the BENTO_SKIN environment variable.
+ * xml/player-elements.xml.  Skin assets (player.png, numfont.png) are
+ * embedded in bento_assets.h — no external Bento skin folder is required.
  * Set BENTO_ZOOM=2 (or 3, 4) to scale the panel up on high-resolution screens.
  *
  * Milestone 5: the playlist behaves like Audacious's own: click / Ctrl / Shift
@@ -36,6 +32,7 @@
  * Audacious interface; it replaces the stock Qt/GTK UI and runs as the
  * sole main window (QApplication::exec is owned by this plugin).
  */
+#include "bento_assets.h"
 
 #include <atomic>
 #include <cmath>
@@ -48,7 +45,6 @@
 #include <QContextMenuEvent>
 #include <QCursor>
 #include <QDesktopServices>
-#include <QDir>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
 #include <QDragMoveEvent>
@@ -72,7 +68,6 @@
 #include <QPixmap>
 #include <QPointer>
 #include <QResizeEvent>
-#include <QStandardPaths>
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QUrl>
@@ -285,15 +280,6 @@ namespace {
         bg.setColorAt(0.0, QColor(48, 53, 57));
         bg.setColorAt(1.0, QColor(37, 42, 45));
         return bg;
-    }
-
-    QString skinDir()
-    {
-        QByteArray env = qgetenv("BENTO_SKIN");
-        if (!env.isEmpty())
-            return QString::fromLocal8Bit(env);
-        return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) +
-        "/audacious/Bento";
     }
 
     QPixmap tintSprite(const QImage & src, QRgb color, double alphaGain)
@@ -708,19 +694,16 @@ namespace {
         m_zoom = zoomOk ? qBound(1, z, 4) : 1;
         // zoom scales the *player skin* drawing only; overall window is free-size
 
-        QString dir = skinDir();
-        if (!m_sheet.load(dir + "/window/player.png"))
+        // Load skin assets from embedded data in bento_assets.h
+        if (!m_sheet.loadFromData(player_png, player_png_len))
         {
-            m_error = "Bento skin not found.\n\nExpected:\n" + dir +
-            "/window/player.png\n\nUnzip Bento.zip into "
-            "~/.local/share/audacious/ (or set BENTO_SKIN).";
-            AUDERR("bento: could not load %s/window/player.png\n",
-                   dir.toUtf8().constData());
+            m_error = "Failed to load embedded Bento player skin.";
+            AUDERR("bento: could not load embedded player.png data\n");
         }
         else
         {
             QPixmap numfont;
-            if (numfont.load(dir + "/window/numfont.png"))
+            if (numfont.loadFromData(numfont_png, numfont_png_len))
             {
                 static const int cells[12] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 15};
                 for (int i = 0; i < 12; i++)
@@ -3483,7 +3466,7 @@ const char BentoIface::about[] =
 "Bento Interface for Audacious — Winamp 5 Bento-style main window\n"
 "(player, video panel, playlist).\n"
 "Skin artwork by Taber Buhl and Martin Poehlmann (Bento, Winamp).\n"
-"Place the unzipped Bento folder in ~/.local/share/audacious/\n"
+"Skin assets are embedded; no external Bento folder required.\n"
 "Select this interface under Settings → Appearance → Interface.";
 
 bool BentoIface::init()

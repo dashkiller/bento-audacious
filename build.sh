@@ -1,10 +1,17 @@
 #!/bin/sh
 # Build bento.so — Audacious 4.x full interface plugin (Qt).
 # Links against libaudqt (required for audqt::init / QtIfacePlugin).
+#
+# Layout:
+#   ./build.sh          (this script, at project root)
+#   ./src/bento.cc
+#   ./src/bento_assets.h
+#   ./bento.so          (output)
 set -e
 cd "$(dirname "$0")"
 
-OUT="../bento.so"
+SRC=src
+OUT=bento.so
 
 if [ -z "$QT" ]; then
     LDCONFIG=$(command -v ldconfig || echo /sbin/ldconfig)
@@ -34,7 +41,7 @@ fi
 echo "CFLAGS: $CFLAGS"
 echo "LIBS:   $LIBS"
 
-g++ -std=c++17 -O2 -fPIC -shared -Wall bento.cc -o "$OUT" $CFLAGS $LIBS
+g++ -std=c++17 -O2 -fPIC -shared -Wall -I"$SRC" "$SRC/bento.cc" -o "$OUT" $CFLAGS $LIBS
 
 # Verify the critical audqt symbols resolved
 if nm -D "$OUT" 2>/dev/null | grep -q ' U .*prefswin_show'; then
@@ -43,7 +50,7 @@ if nm -D "$OUT" 2>/dev/null | grep -q ' U .*prefswin_show'; then
     ldd "$OUT" || true
 fi
 
-REAL_OUT=$(cd .. && pwd)/bento.so
+REAL_OUT=$(pwd)/bento.so
 echo
 echo "Built: $REAL_OUT"
 ldd "$OUT" | grep -E 'audqt|Qt' || true
@@ -54,5 +61,3 @@ echo "Install with:"
 echo "  sudo cp \"$REAL_OUT\" \"$GENDIR/\""
 echo ""
 echo "Then fully quit Audacious and restart before switching interface."
-echo ""
-echo "Don't forget to unzip Bento.zip"
