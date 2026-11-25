@@ -7,7 +7,7 @@
 ## Screenshots
 
 <p align="center">
-  <img width="818" height="602" src="https://raw.githubusercontent.com/dashkiller/bento-audacious/main/screenshots/bento-audacious-screenshot-03.png">
+  <img src="https://raw.githubusercontent.com/dashkiller/bento-audacious/main/screenshots/bento-audacious-screenshot-03.png">
 </p>
 
 ## Troubleshooting
