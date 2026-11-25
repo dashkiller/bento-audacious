@@ -12,4 +12,5 @@
 
 # Troubleshooting
 
-    Only tested on Arch.
+Only tested on Arch.
+    
