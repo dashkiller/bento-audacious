@@ -4,13 +4,13 @@
     Move bento.so to /usr/lib/audacious/General/ (build.sh includes instructions for this)
 
     
-# Screenshots
+## Screenshots
 
 <p align="center">
   <img width="818" height="602" src="https://raw.githubusercontent.com/dashkiller/bento-audacious/main/screenshots/bento-audacious-screenshot-02.png">
 </p>
 
-# Troubleshooting
+## Troubleshooting
 
 Only tested on Arch.
     
