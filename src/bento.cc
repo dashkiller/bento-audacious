@@ -277,8 +277,14 @@ namespace {
     QLinearGradient playerGradient()
     {
         QLinearGradient bg(0, 0, 0, PLAYER_H);
-        bg.setColorAt(0.0, QColor(48, 53, 57));
-        bg.setColorAt(1.0, QColor(37, 42, 45));
+        // Subtle lift through the middle, matching the supplied gradient reference.
+        bg.setColorAt(0.00, QColor(0x2E, 0x33, 0x3B));
+        bg.setColorAt(0.20, QColor(0x31, 0x37, 0x3E));
+        bg.setColorAt(0.40, QColor(0x34, 0x3B, 0x40));
+        bg.setColorAt(0.55, QColor(0x35, 0x3C, 0x40));
+        bg.setColorAt(0.70, QColor(0x34, 0x3A, 0x3E));
+        bg.setColorAt(0.85, QColor(0x30, 0x36, 0x39));
+        bg.setColorAt(1.00, QColor(0x2C, 0x32, 0x35));
         return bg;
     }
 
@@ -1696,7 +1702,8 @@ namespace {
     void BentoWidget::drawTabs(QPainter & p)
     {
         QRect area = tabArea();
-        p.fillRect(area, QColor(37, 42, 45));
+        // Match the tab strip to the bottom-most colour of the player gradient.
+        p.fillRect(area, QColor(0x2C, 0x32, 0x35));
         p.fillRect(area.x(), area.bottom(), area.width(), 1, kChromeEdge);
 
         p.setFont(m_tabFont);
@@ -2068,14 +2075,24 @@ namespace {
 
         // overall dark fill
         p.fillRect(rect(), kChromeDark);
-        p.fillRect(QRect(0, 0, leftColumnWidth(), TOP_PAD), QColor(48, 53, 57));
-        p.translate(0, TOP_PAD);
+        // The player column owns its top inset; the playlist starts flush
+        // beneath the OS title bar.
+        p.fillRect(QRect(0, 0, leftColumnWidth(), TOP_PAD), QColor(0x2E, 0x33, 0x3B));
 
+        p.save();
+        p.translate(0, TOP_PAD);
         drawPlayer(p);
         drawArt(p);
         drawTabs(p);
         drawVideo(p);
+        p.restore();
+
+        // playlistArea() retains its logical -TOP_PAD origin so existing
+        // hit-testing stays aligned; compensate locally when painting it.
+        p.save();
+        p.translate(0, TOP_PAD);
         drawPlaylist(p);
+        p.restore();
     }
 
     /* ---- interaction -------------------------------------------------------- */
