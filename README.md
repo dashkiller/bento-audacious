@@ -8,5 +8,5 @@
 # Screenshots
 
 <p align="center">
-  <img width="818" height="602" src="https://raw.githubusercontent.com/DashKiller/bento-audacious/main/screenshots/bento-audacious-screenshot-02.png">
+  <img width="818" height="602" src="https://raw.githubusercontent.com/dashkiller/bento-audacious/main/screenshots/bento-audacious-screenshot-02.png">
 </p>
