@@ -52,5 +52,7 @@ GENDIR=$(find /usr/lib /usr/lib64 /usr/local/lib -type d -path '*audacious/Gener
 [ -z "$GENDIR" ] && GENDIR="/usr/lib/audacious/General"
 echo "Install with:"
 echo "  sudo cp \"$REAL_OUT\" \"$GENDIR/\""
-echo
+echo ""
 echo "Then fully quit Audacious and restart before switching interface."
+echo ""
+echo "Don't forget to unzip Bento.zip"
