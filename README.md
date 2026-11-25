@@ -7,4 +7,4 @@
     
 # Screenshots
 
-    ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Audacious Screenshot")
+    ![alt text](https://github.com/DashKiller/bento-audacious/blob/main/screenshots/bento-audacious-screenshot-01.png "Audacious Screenshot")
